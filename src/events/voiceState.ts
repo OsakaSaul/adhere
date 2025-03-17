@@ -1,7 +1,6 @@
 import log from "../lib/logger"
-
-import { insertVoiceChannelEvent } from "../connections/mongoDb"
 import { VoiceState, GuildMember } from "discord.js"
+import { handleEvent } from "../bot-dispatcher"
 
 const memberMoved = (
   member: GuildMember,
@@ -128,7 +127,8 @@ const screenUnshared = (
 export function voiceStateEvent(oldState: VoiceState, newState: VoiceState) {
   const member = newState.member
   const userName = member?.user.tag
-  const guildId = newState.guild.id
+  //const guildId = newState.guild.id
+  const guild = newState.guild
 
   if (!member) {
     return
@@ -138,65 +138,47 @@ export function voiceStateEvent(oldState: VoiceState, newState: VoiceState) {
     // ignore myself and other bots
     return
   }
+
+  // Instead of inserting into MongoDB, call handleEvent directly
   if (memberJoined(member, oldState, newState) && newState.channel) {
     log(`${newState.guild.name}: ${userName} joined ${newState.channel?.name}.`)
-    insertVoiceChannelEvent(
-      guildId,
-      member,
-      newState.channel,
-      "joinVoiceChannel"
-    )
+    handleEvent(guild, member, "joinVoiceChannel")
   }
 
   if (memberLeft(member, oldState, newState) && oldState.channel) {
     log(`${newState.guild.name}: ${userName} left ${oldState.channel?.name}.`)
-    insertVoiceChannelEvent(
-      guildId,
-      member,
-      oldState.channel,
-      "leaveVoiceChannel"
-    )
+    handleEvent(guild, member, "leaveVoiceChannel")
   }
 
   if (
-    memberMoved(member, oldState, newState) &&
-    newState.channel &&
-    oldState.channel
+      memberMoved(member, oldState, newState) &&
+      newState.channel &&
+      oldState.channel
   ) {
     log(
-      `${newState.guild.name}: ${userName} moved from ${oldState.channel?.name} to ${newState.channel?.name}.`
+        `${newState.guild.name}: ${userName} moved from ${oldState.channel?.name} to ${newState.channel?.name}.`
     )
-    insertVoiceChannelEvent(
-      guildId,
-      member,
-      oldState.channel,
-      "leaveVoiceChannel"
-    )
-    insertVoiceChannelEvent(
-      guildId,
-      member,
-      newState.channel,
-      "joinVoiceChannel"
-    )
+    handleEvent(guild, member, "leaveVoiceChannel")
+    handleEvent(guild, member, "joinVoiceChannel")
   }
 
   if (cameraDisabled(member, oldState, newState) && newState.channel) {
     log(`${newState.guild.name}: ${userName} camera disabled.`)
-    insertVoiceChannelEvent(guildId, member, newState.channel, "cameraOff")
+    handleEvent(guild, member, "cameraOff")
   }
 
   if (cameraEnabled(member, oldState, newState) && newState.channel) {
     log(`${newState.guild.name}: ${userName} camera enabled.`)
-    insertVoiceChannelEvent(guildId, member, newState.channel, "cameraOn")
+    handleEvent(guild, member, "cameraOn")
   }
 
   if (screenShared(member, oldState, newState) && newState.channel) {
     log(`${newState.guild.name}: ${userName} screen shared.`)
-    insertVoiceChannelEvent(guildId, member, newState.channel, "screenShared")
+    handleEvent(guild, member, "screenShared")
   }
 
   if (screenUnshared(member, oldState, newState) && newState.channel) {
     log(`${newState.guild.name}: ${userName} screen unshared.`)
-    insertVoiceChannelEvent(guildId, member, newState.channel, "screenUnshared")
+    handleEvent(guild, member, "screenUnshared")
   }
 }

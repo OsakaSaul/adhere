@@ -1,0 +1,6 @@
+{
+  "watch": ["src"],
+  "ext": "ts",
+  "ignore": ["test", "dist", "node_modules"],
+  "exec": "node --no-warnings=ExperimentalWarning -r ts-node/register ./src/main.ts"
+}

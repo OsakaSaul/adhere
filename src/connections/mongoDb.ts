@@ -9,11 +9,12 @@ import VoiceChannelEvent, {
 import { GuildMember, VoiceBasedChannel } from "discord.js"
 import { GuildInviteData, InviteData } from "../models/inviteData"
 
-const mongoUser = process.env.MONGO_USER
-const mongoPass = process.env.MONGO_PASS
+// const mongoUser = process.env.MONGO_USER
+// const mongoPass = process.env.MONGO_PASS
 const mongoDb = process.env.MONGO_DB
-const mongoUrl = process.env.MONGO_URL
-const uri = `mongodb+srv://${mongoUser}:${mongoPass}@${mongoUrl}/${mongoDb}?retryWrites=false&w=majority`
+// const mongoUrl = process.env.MONGO_URL
+// const uri = `mongodb+srv://${mongoUser}:${mongoPass}@${mongoUrl}/${mongoDb}?retryWrites=false&w=majority`
+const uri = `mongodb://mongodb/${mongoDb}?retryWrites=false&w=majority`
 
 const mongoClient = new MongoClient(uri, {
   serverApi: {
@@ -23,25 +24,25 @@ const mongoClient = new MongoClient(uri, {
   },
 })
 
-export const getEnabledStatus = async (guildId: string) => {
-  const database = mongoClient.db(mongoDb)
-  const result = await database
-    .collection<NumberSetting>("numberSettings")
-    .findOne({ name: "enabledOnServer", guildId: guildId })
-  return result ? result.value : 0
+export const getEnabledStatus = async (guildId: string): Promise<boolean> => {
+  return true;
+  // const database = mongoClient.db(mongoDb)
+  // const result = await database
+  //   .collection<NumberSetting>("numberSettings")
+  //   .findOne({ name: "enabledOnServer", guildId: guildId })
+  // return result ? result.value : 0
 }
 
 export const setEnabledStatus = async (guildId: string, status: boolean) => {
   const statusNumber = status ? 1 : 0
   const database = mongoClient.db(mongoDb)
-  const result = await database
+  return await database
     .collection<NumberSetting>("numberSettings")
     .updateOne(
       { name: "enabledOnServer", guildId: guildId },
       { $set: { value: statusNumber } },
       { upsert: true }
     )
-  return result
 }
 
 export const insertVoiceChannelEvent = async (
@@ -54,7 +55,7 @@ export const insertVoiceChannelEvent = async (
   const voiceChannelEvent =
     database.collection<VoiceChannelEvent>("voiceChannelEvent")
 
-  const result = await voiceChannelEvent.insertOne({
+  return await voiceChannelEvent.insertOne({
     guildId: guildId,
     memberId: member.id,
     memberName: member.user.username,
@@ -63,8 +64,6 @@ export const insertVoiceChannelEvent = async (
     action: action,
     timestamp: new Date(),
   })
-
-  return result
 }
 
 export const insertGuildJoinEvent = async (
@@ -74,24 +73,22 @@ export const insertGuildJoinEvent = async (
 ) => {
   const database = mongoClient.db(mongoDb)
   const guildJoinEvent = database.collection<GuildJoinEvent>("guildJoinEvent")
-  const result = await guildJoinEvent.insertOne({
+  return await guildJoinEvent.insertOne({
     guildId: guildId,
     memberId: member.id,
     inviteCode: inviteCode ? inviteCode : "none",
     timestamp: new Date(),
   })
-  return result
 }
 
 export const setInvitesData = async (guildId: string, discordInvitesData) => {
   const database = mongoClient.db(mongoDb)
   const invitesData = database.collection<InviteData>("invitesData")
-  const result = await invitesData.updateOne(
+  return await invitesData.updateOne(
     { guildId: guildId },
     { $set: { invites: discordInvitesData } },
     { upsert: true }
   )
-  return result
 }
 
 export const getInvitesData = async (guildId: string) => {
@@ -111,7 +108,7 @@ export const incrementInvite = async (guildId: string, code: string) => {
 
   if (inviteCount) {
     const newInviteCount = inviteCount[code] + 1
-    const result = await invitesData.updateOne(
+    return await invitesData.updateOne(
       { guildId: guildId, "invites.code": code },
       {
         $set: {
@@ -120,7 +117,6 @@ export const incrementInvite = async (guildId: string, code: string) => {
       },
       { upsert: true }
     )
-    return result
   } else {
     return undefined
   }
@@ -133,7 +129,7 @@ export const setMemberMutedByBot = async (
 ) => {
   const database = mongoClient.db(mongoDb)
   const memberMuted = database.collection<MemberMutedByBot>("memberMutedByBot")
-  const result = await memberMuted.updateOne(
+  await memberMuted.updateOne(
     { guildId: guildId, memberId: memberId },
     { $set: { serverMuted: serverMuted } },
     { upsert: true }
@@ -147,12 +143,11 @@ export const setNumberSetting = async (
 ) => {
   const database = mongoClient.db(mongoDb)
   const numberSetting = database.collection<NumberSetting>("numberSettings")
-  const result = await numberSetting.updateOne(
+  return await numberSetting.updateOne(
     { $inc: { guildId: guildId } },
     { name: settingName, value: value },
     { upsert: true }
   )
-  return result
 }
 
 export const getNumberSetting = async (
@@ -174,12 +169,11 @@ export const setLogChannelSetting = async (
   const database = mongoClient.db(mongoDb)
   const logChannelSetting =
     database.collection<LogChannelSetting>("logChannelSettings")
-  const result = await logChannelSetting.updateOne(
+  return await logChannelSetting.updateOne(
     { guildId: guildId },
     { $set: { channelId: channelId, logType: logType } },
     { upsert: true }
   )
-  return result
 }
 
 export const getLogChannelSetting = async (
@@ -187,10 +181,9 @@ export const getLogChannelSetting = async (
   logType: LogType
 ) => {
   const database = mongoClient.db(mongoDb)
-  const result = await database
+  return await database
     .collection<LogChannelSetting>("logChannelSetting")
     .findOne({ guildId: guildId, logType: logType })
-  return result
 }
 
 process.on("SIGINT", () => {

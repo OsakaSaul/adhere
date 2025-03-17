@@ -2,13 +2,14 @@ import * as dotenv from "dotenv"
 dotenv.config()
 import { Client, Events, GatewayIntentBits } from "discord.js"
 
-import { guildMemberAddEvent, updateInvitesData } from "./events/guildJoin"
+// import { guildMemberAddEvent, updateInvitesData } from "./events/guildJoin"
+import { guildMemberAddEvent } from "./events/guildJoin"
 import { readyEvent } from "./events/ready"
 import { voiceStateEvent } from "./events/voiceState"
 
-import { botScheduler } from "./bot-dispatcher"
+//import { botScheduler } from "./bot-dispatcher"
 import { activeCommands } from "./commands/activeCommands"
-botScheduler.run()
+//botScheduler.run()
 
 const commands = activeCommands
 
@@ -21,22 +22,28 @@ const client = new Client({
   ],
 })
 
-client.on("ready", readyEvent)
-client.on("ready", updateInvitesData)
 
-client.on("voiceStateUpdate", voiceStateEvent)
-client.on("guildMemberAdd", guildMemberAddEvent)
+const startBot = async () => {
+  client.on("ready", readyEvent)
+  //client.on("ready", updateInvitesData)
+  client.on("voiceStateUpdate", voiceStateEvent)
+  client.on("guildMemberAdd", guildMemberAddEvent)
 
-client.on(Events.InteractionCreate, async (interaction) => {
-  if (!interaction.isChatInputCommand()) return
-  if (!Object.keys(commands).includes(interaction.commandName)) {
-    return
-  }
-  const command =
-    commands[interaction.commandName as unknown as keyof typeof commands]
-  try {
-    await command.execute(interaction)
-  } catch {}
-})
+  client.on(Events.InteractionCreate, async (interaction) => {
+    if (!interaction.isChatInputCommand()) return
+    if (!Object.keys(commands).includes(interaction.commandName)) {
+      return
+    }
+    const command =
+        commands[interaction.commandName as unknown as keyof typeof commands]
+    try {
+      await command.execute(interaction)
+    } catch {
+    }
+  })
 
-client.login(botToken)
+  client.login(botToken)
+}
+
+
+startBot();

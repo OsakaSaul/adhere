@@ -1,48 +1,54 @@
 {
-  "name": "camera-on",
-  "version": "1.0.0",
-  "description": "A discord bot that enforces rules (camera on and no screen sharing) for voice chat users.",
+  "name": "tavern-bot",
+  "version": "0.1.0",
+  "description": "The Tavern discord bot.",
   "main": "main.js",
   "scripts": {
-    "build": "rm -rf ./dist && yarn run tsc",
-    "dev": "tsx ./src/main.ts",
-    "start": "node -r dotenv/config dist/main.js",
-    "tsc": "tsc",
-    "postinstall": "yarn run build",
-    "deployCommands": "yarn build && node -r dotenv/config dist/deploy-commands.js",
-    "test": "npx jest --detectOpenHandles",
-    "ansible-setup": "cd ansible && ansible-playbook -i hosts.ini setup.yml",
-    "ansible-deploy": "cd ansible && ansible-playbook -i hosts.ini deploy.yml",
-    "ansible-update": "cd ansible && ansible-playbook -i hosts.ini update.yml",
-    "ansible-start": "cd ansible && ansible-playbook -i hosts.ini start.yml",
-    "ansible-stop": "cd ansible && ansible-playbook -i hosts.ini stop.yml"
+    "build": "npx tsc",
+    "dev": "nodemon",
+    "start": "node dist/main.js",
+    "tsc": "npx tsc",
+    "_deployCommands": "yarn build && node -r dotenv/config dist/deploy-commands.js",
+    "_test": "npx jest --detectOpenHandles",
+    "_ansible-setup": "cd ansible && ansible-playbook -i hosts.ini setup.yml",
+    "_ansible-deploy": "cd ansible && ansible-playbook -i hosts.ini deploy.yml",
+    "_ansible-update": "cd ansible && ansible-playbook -i hosts.ini update.yml",
+    "_ansible-start": "cd ansible && ansible-playbook -i hosts.ini start.yml",
+    "_ansible-stop": "cd ansible && ansible-playbook -i hosts.ini stop.yml"
   },
-  "author": "davis9001",
+  "author": "The Tavern Development Team",
+  "contributors": [
+    {
+      "name": "davis9001",
+      "url": "https://github.com/davis9001/adherebot"
+    }
+  ],
   "license": "ISC",
   "dependencies": {
-    "@discordjs/voice": "^0.17.0",
+    "@discordjs/rest": "^2.4.3",
+    "@discordjs/voice": "^0.18.0",
     "@ffmpeg/core": "^0.12.4",
     "@ffmpeg/ffmpeg": "^0.12.7",
     "@hokify/agenda": "^6.3.0",
-    "@tsconfig/node18": "^18.2.0",
-    "discord.js": "^14.15.2",
+    "discord-api-types": "^0.37.119",
+    "discord.js": "^14.11.0",
     "dotenv": "^16.3.1",
     "ffmpeg-static": "^5.2.0",
     "libsodium-wrappers": "^0.7.11",
-    "mongodb": "^4",
-    "tsc": "^2.0.4",
-    "tsconfig": "^7.0.0"
+    "mongodb": "^4"
   },
   "devDependencies": {
-    "@jest/globals": "^29.7.0",
-    "@types/jest": "^29.5.11",
-    "@types/node": "^20.4.2",
+    "@tsconfig/node22": "^22.0.0",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.13.10",
     "chai": "^4.3.10",
     "debug": "^4.3.4",
     "jest": "^29.7.0",
     "mongodb-memory-server": "^8.10.1",
+    "nodemon": "^3.1.9",
     "ts-jest": "^29.1.1",
-    "tsx": "^3.12.7",
-    "typescript": "^5.3.3"
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2"
   }
 }
