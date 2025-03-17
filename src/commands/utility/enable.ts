@@ -16,14 +16,13 @@ export const enable = {
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),
   async execute(interaction: CommandInteraction) {
-    // @ts-ignore
     await interaction.deferReply()
     if (!interaction.guildId) {
       await interaction.editReply("This command can only be used in a server.")
       return
     }
     await setEnabledStatus(interaction.guildId, true)
-      .then(async (response) => {
+      .then(async () => {
         await interaction.editReply(`${botName} enabled.`)
       })
       .catch(async (err) => {

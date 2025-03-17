@@ -25,12 +25,11 @@ const mongoClient = new MongoClient(uri, {
 })
 
 export const getEnabledStatus = async (guildId: string): Promise<boolean> => {
-  return true;
-  // const database = mongoClient.db(mongoDb)
-  // const result = await database
-  //   .collection<NumberSetting>("numberSettings")
-  //   .findOne({ name: "enabledOnServer", guildId: guildId })
-  // return result ? result.value : 0
+  const database = mongoClient.db(mongoDb)
+  const result = await database
+    .collection<NumberSetting>("numberSettings")
+    .findOne({ name: "enabledOnServer", guildId: guildId })
+  return !!result
 }
 
 export const setEnabledStatus = async (guildId: string, status: boolean) => {
