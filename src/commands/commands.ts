@@ -5,6 +5,8 @@ import { disable } from "./utility/disable"
 import { enable } from "./utility/enable"
 import { setlogchannel } from "./utility/setLogChannel"
 import { ping } from "./utility/ping"
+import { setRedditLink } from "./text/setRedditLink";
+
 
 // Define a type for our commands to ensure consistency
 export interface Command {
@@ -22,5 +24,6 @@ commands.set(whymuted.command.name, whymuted);
 commands.set(disable.command.name, disable);
 commands.set(enable.command.name, enable);
 commands.set(setlogchannel.command.name, setlogchannel);
+commands.set(setRedditLink.command.name, setRedditLink);
 
 export default commands;

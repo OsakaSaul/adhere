@@ -4,6 +4,7 @@ dotenv.config();
 
 
 export class Config {
+    static readonly BOT_NAME: string = this.getEnv('BOT_NAME');
     static readonly DISCORD_BOT_TOKEN: string = this.getEnv('DISCORD_BOT_TOKEN');
     static readonly DISCORD_APP_ID: string = this.getEnv('DISCORD_APP_ID');
 

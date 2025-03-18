@@ -1,19 +1,18 @@
 import { Interaction } from "discord.js";
 import log from "../lib/logger";
-import { activeCommands } from "../commands/activeCommands";
-
-const commands = activeCommands
+import commands from "../commands/commands";
 
 export async function interactionCreateEvent(interaction: Interaction) {
-    log(`Interaction: ${interaction}`)
+    log(`Interaction1: ${interaction}`)
     if (!interaction.isChatInputCommand()) return
-    if (!Object.keys(commands).includes(interaction.commandName)) {
-        return
-    }
-    const command =
-        commands[interaction.commandName as unknown as keyof typeof commands]
+    log(`Command: ${interaction.commandName}`)
     try {
-        await command.execute(interaction)
+        const command = commands.get(interaction.commandName)
+        if (command) {
+            await command.execute(interaction)
+        } else {
+            log(`Command not found: ${interaction.commandName}`)
+        }
     } catch {
         log(`Error executing command: ${interaction.commandName}`)
     }
