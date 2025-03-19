@@ -2,6 +2,7 @@ import mongoClient from "../connections/mongoDb";
 import { GuildConfig, GuildConfigDocument } from "../models/GuildConfig";
 import { Config } from "../config/Config";
 
+
 export class GuildConfigService {
     private database = mongoClient.db(Config.MONGO_DATABASE);
     private guildConfigs = this.database.collection<GuildConfigDocument>("GuildConfigDocument");
@@ -12,7 +13,10 @@ export class GuildConfigService {
             return config;
         }
         // Return default configuration if none exists
-        return { guildId };
+        return {
+            guildId,
+            requireCamera: true,
+        } as GuildConfig;
     }
 
     public async updateGuildConfig(

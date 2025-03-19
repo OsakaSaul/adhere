@@ -9,6 +9,7 @@ import {Config} from "../../config/Config";
 import {validateCommand} from "../../utils/permissionsCheck";
 import {isValidUrl} from "../../utils/validation";
 
+
 const botName = Config.BOT_NAME
 const guildConfigService = new GuildConfigService()
 
@@ -24,6 +25,7 @@ export const setRedditLink = {
                 .setRequired(true)
         )
         .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),
+
     async execute(interaction: CommandInteraction) {
         if (!await validateCommand(interaction)) {
             return;
