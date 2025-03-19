@@ -1,4 +1,4 @@
-import log from "../lib/logger"
+import log from "../utils/logger"
 import { VoiceState, GuildMember } from "discord.js"
 import { handleEvent } from "../bot-dispatcher"
 

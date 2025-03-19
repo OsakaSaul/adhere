@@ -6,7 +6,7 @@
 
 // import * as dotenv from "dotenv"
 // dotenv.config()
-// import log from "./lib/logger"
+// import log from "./utils/logger"
 
 // import { getEnabledStatus, getNumberSetting } from "./connections/mongoDb"
 // import VoiceChannelEvent from "./models/voiceChannelEvent"

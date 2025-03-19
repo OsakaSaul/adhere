@@ -3,7 +3,7 @@ import {
     PermissionFlagsBits,
     SlashCommandBuilder,
 } from "discord.js"
-import log from "../../lib/logger"
+import log from "../../utils/logger"
 import {GuildConfigService} from "../../services/GuildConfigService";
 import {Config} from "../../config/Config";
 

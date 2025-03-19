@@ -1,4 +1,4 @@
-import log from "../../lib/logger"
+import log from "../../utils/logger"
 import mongoClient from "../../connections/mongoDb"
 import NumberSetting from "../../models/numberSetting"
 import { CommandReasonType } from "../../models/commandReasonTypes"

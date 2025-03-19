@@ -1,7 +1,7 @@
 import { REST, Routes } from "discord.js"
 import * as dotenv from "dotenv"
 dotenv.config()
-import log from "./lib/logger"
+import log from "./utils/logger"
 import { activeCommandsList } from "./commands/activeCommands"
 
 const clientId = process.env.DISCORD_APP_ID

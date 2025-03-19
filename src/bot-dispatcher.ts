@@ -1,4 +1,4 @@
-import log, { lerror } from "./lib/logger"
+import log, { lerror } from "./utils/logger"
 import * as dotenv from "dotenv"
 dotenv.config()
 const botToken = process.env.DISCORD_BOT_TOKEN

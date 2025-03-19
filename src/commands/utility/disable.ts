@@ -1,5 +1,5 @@
 import { setEnabledStatus } from "../../connections/mongoDb"
-import log from "../../lib/logger"
+import log from "../../utils/logger"
 import {
   CommandInteraction,
   PermissionFlagsBits,

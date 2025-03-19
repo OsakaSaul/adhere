@@ -1,5 +1,5 @@
 import {Client, Guild} from "discord.js"
-import log from "../lib/logger"
+import log from "../utils/logger"
 import { registerCommands } from "../commands/registerCommands"
 
 export async function readyEvent(client: Client) {

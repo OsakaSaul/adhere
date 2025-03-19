@@ -1,7 +1,7 @@
 import {REST, Routes} from "discord.js"
 import { Config } from "../config/Config"
 import commands from "./commands";
-import log from "../lib/logger"
+import log from "../utils/logger"
 
 const rest = new REST({ version: '10' }).setToken(Config.DISCORD_BOT_TOKEN);
 

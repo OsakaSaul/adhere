@@ -13,7 +13,7 @@ import {
   insertGuildJoinEvent,
   setInvitesData,
 } from "../connections/mongoDb"
-import log from "../lib/logger"
+import log from "../utils/logger"
 
 export async function guildMemberAddEvent(member: GuildMember) {
   setTimeout(async () => {
