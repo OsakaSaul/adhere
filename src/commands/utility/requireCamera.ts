@@ -1,7 +1,6 @@
 import log from "../../utils/logger"
 import {
     ChatInputCommandInteraction,
-    CommandInteraction,
     PermissionFlagsBits,
     SlashCommandBuilder,
 } from "discord.js"
@@ -31,7 +30,7 @@ export const requireCamera = {
                 .setName('status')
                 .setDescription('Check the current status of camera enforcement')
         )
-        .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),
+        .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers) as SlashCommandBuilder,
 
     async execute(interaction: ChatInputCommandInteraction) {
         if (!await validateCommand(interaction)) {

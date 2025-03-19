@@ -1,6 +1,7 @@
 import log from "../utils/logger"
 import { VoiceState, GuildMember } from "discord.js"
-import { handleEvent } from "../bot-dispatcher"
+import { handleEvent } from "../services/bot-dispatcher"
+
 
 const memberMoved = (
   member: GuildMember,

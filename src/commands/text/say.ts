@@ -1,9 +1,8 @@
 import log from "../../utils/logger"
 import {
-  CommandInteraction,
   PermissionFlagsBits,
   SlashCommandBuilder,
-  ChannelType,
+  ChannelType, ChatInputCommandInteraction,
 } from "discord.js"
 import {validateCommand} from "../../utils/permissionsCheck";
 
@@ -25,8 +24,8 @@ export const say = {
       .addUserOption((option) =>
           option.setName("user").setDescription("The user to send the message as.")
       )
-      .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
-  async execute(interaction: CommandInteraction) {
+      .setDefaultMemberPermissions(PermissionFlagsBits.Administrator) as SlashCommandBuilder,
+  async execute(interaction: ChatInputCommandInteraction) {
     if (!await validateCommand(interaction)) {
       return;
     }

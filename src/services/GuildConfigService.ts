@@ -16,6 +16,8 @@ export class GuildConfigService {
         return {
             guildId,
             requireCamera: true,
+            welcomeThreshold: 3,
+            joinCount: 0,
         } as GuildConfig;
     }
 
@@ -29,4 +31,11 @@ export class GuildConfigService {
             { upsert: true }
         );
     }
+
+    public async incrementJoinCount(guildId: string): Promise<void> {
+        const config = await this.getGuildConfig(guildId);
+        const newJoinCount = config.joinCount + 1;
+        await this.updateGuildConfig(guildId, { joinCount: newJoinCount });
+    }
+
 }

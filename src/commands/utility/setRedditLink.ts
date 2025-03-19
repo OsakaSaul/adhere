@@ -1,5 +1,5 @@
 import {
-    CommandInteraction,
+    ChatInputCommandInteraction,
     PermissionFlagsBits,
     SlashCommandBuilder,
 } from "discord.js"
@@ -8,13 +8,14 @@ import {GuildConfigService} from "../../services/GuildConfigService";
 import {Config} from "../../config/Config";
 import {validateCommand} from "../../utils/permissionsCheck";
 import {isValidUrl} from "../../utils/validation";
+import {Command} from "../commands";
 
 
 const botName = Config.BOT_NAME
 const guildConfigService = new GuildConfigService()
 
 
-export const setRedditLink = {
+export const setRedditLink: Command = {
     command: new SlashCommandBuilder()
         .setName("set_reddit_link")
         .setDescription(`Sets the Reddit link for ${botName} to include in the welcome message.`)
@@ -24,9 +25,9 @@ export const setRedditLink = {
                 .setDescription("The reddit link to set.")
                 .setRequired(true)
         )
-        .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),
+        .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers) as SlashCommandBuilder,
 
-    async execute(interaction: CommandInteraction) {
+    async execute(interaction: ChatInputCommandInteraction) {
         if (!await validateCommand(interaction)) {
             return;
         }

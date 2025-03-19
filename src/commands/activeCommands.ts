@@ -1,15 +1,15 @@
 import { say } from "./text/say"
 import { whyMuted } from "./text/whyMuted"
 import { requireCamera } from "./utility/requireCamera"
-import { enable } from "./utility/enable"
-import { setlogchannel } from "./utility/setLogChannel"
+import { setRedditLink } from "./utility/setRedditLink"
+import { setWelcomeThreshold } from "./utility/setWelcomeThreshold"
 
 export const activeCommands = {
-  enable,
-  requireCam: requireCamera,
+  requireCamera,
   whyMuted,
   say,
-  setlogchannel,
+  setRedditLink,
+  setWelcomeThreshold,
 }
 
 export const activeCommandsList = Object.values(activeCommands)
