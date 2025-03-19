@@ -6,6 +6,8 @@ import {
 import log from "../../utils/logger"
 import {GuildConfigService} from "../../services/GuildConfigService";
 import {Config} from "../../config/Config";
+import {validateCommand} from "../../utils/permissionsCheck";
+import {isValidUrl} from "../../utils/validation";
 
 const botName = Config.BOT_NAME
 const guildConfigService = new GuildConfigService()
@@ -23,17 +25,13 @@ export const setRedditLink = {
         )
         .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),
     async execute(interaction: CommandInteraction) {
-        if (!interaction.guildId) {
-            await interaction.editReply("This command can only be used in a server.")
-            return
+        if (!await validateCommand(interaction)) {
+            return;
         }
-        if (!interaction.memberPermissions?.has(PermissionFlagsBits.BanMembers)) {
-            await interaction.reply("You do not have permission to use this command.")
-            return
-        }
+        const guildId = interaction.guildId as string;
         const link = interaction.options.get("link")
         if (link && typeof link.value === 'string' && isValidUrl(link.value)) {
-            await guildConfigService.updateGuildConfig(interaction.guildId, { redditLink: link.value })
+            await guildConfigService.updateGuildConfig(guildId, { redditLink: link.value })
             await interaction.reply(`Reddit link set to ${link.value}.`)
             log(`Reddit link set to ${link.value} in ${interaction.guild?.name}.`)
         } else {
@@ -41,13 +39,4 @@ export const setRedditLink = {
             log(`Error setting reddit link in ${interaction.guild?.name}.`)
         }
     },
-}
-
-function isValidUrl(url: string): boolean {
-    try {
-        new URL(url)
-        return true
-    } catch {
-        return false
-    }
 }
