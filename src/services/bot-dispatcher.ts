@@ -33,7 +33,7 @@ export const handleEvent = async (
       await serverMuteMember(guild, member)
       break
     case "leaveVoiceChannel":
-      // await serverUnmuteMember(guild, member)
+      await serverUnmuteMember(guild, member)
       break
     case "cameraOn":
       await serverUnmuteMember(guild, member)
@@ -98,6 +98,7 @@ export const serverMuteMember = async (guild: Guild, member: GuildMember) => {
   }
 }
 
+
 export const serverUnmuteMember = async (guild: Guild, member: GuildMember) => {
   // Existing code remains unchanged
   if (!member.voice) return
@@ -122,7 +123,11 @@ export const screenShared = async (
 ): Promise<void> => {
   if (member.voice.channel?.name.toLowerCase().includes('bronze')) {
     log(`${guild.name}: ${member.user.username} sharing in a bronze channel`)
-    await member.voice.disconnect();
+    try {
+      await member.voice.disconnect();
+    } catch (error) {
+      lerror(`Failed to disconnect ${member.user.username}: ${error}`);
+    }
 
     const welcomeChannel = new ChannelService(guild.channels).findWelcomeChannel()
     if (!welcomeChannel) {
