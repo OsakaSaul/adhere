@@ -31,15 +31,29 @@ export const setRedditLink: Command = {
         if (!await validateCommand(interaction)) {
             return;
         }
-        const guildId = interaction.guildId as string;
-        const link = interaction.options.get("link")
+
+        if (!interaction.guild) {
+            await interaction.reply({
+                content: 'This command can only be used in a server.',
+                ephemeral: true
+            });
+            return;
+        }
+
+        const link = interaction.options.get("link");
         if (link && typeof link.value === 'string' && isValidUrl(link.value)) {
-            await guildConfigService.updateGuildConfig(guildId, { redditLink: link.value })
-            await interaction.reply(`Reddit link set to ${link.value}.`)
-            log(`Reddit link set to ${link.value} in ${interaction.guild?.name}.`)
+            await guildConfigService.updateGuildConfig(interaction.guild, { redditLink: link.value });
+            await interaction.reply({
+                content: `Reddit link set to ${link.value}.`,
+                ephemeral: true
+            });
+            log(`[${interaction.guild.name}] Reddit link set to ${link.value}`);
         } else {
-            await interaction.reply(`Error setting reddit link. Please provide a valid URL.`)
-            log(`Error setting reddit link in ${interaction.guild?.name}.`)
+            await interaction.reply({
+                content: `Error setting Reddit link. Please provide a valid URL.`,
+                ephemeral: true
+            });
+            log(`[${interaction.guild.name}] Error setting Reddit link - invalid URL provided`);
         }
     },
 }

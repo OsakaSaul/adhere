@@ -23,7 +23,7 @@ export const handleEvent = async (
     member: GuildMember,
     action: string
 ) => {
-  const guildConfig = await guildConfigService.getGuildConfig(guild.id)
+  const guildConfig = await guildConfigService.getGuildConfig(guild)
   if (!guildConfig.requireCamera) {
     log(`${guild.name}: Camera requirement not enabled on server.`)
     return
@@ -47,7 +47,7 @@ export const handleEvent = async (
 
 
 export const serverMuteMember = async (guild: Guild, member: GuildMember) => {
-  const guildConfig = await guildConfigService.getGuildConfig(guild.id)
+  const guildConfig = await guildConfigService.getGuildConfig(guild)
   const enabledStatus = guildConfig.requireCamera
   const botUser = discordClient?.user?.id
   if (!member.voice) return

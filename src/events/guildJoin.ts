@@ -17,9 +17,7 @@ let newMembers: GuildMember[] = []
 
 export async function guildMemberAddEvent(member: GuildMember) {
   try {
-    const guildId = member.guild.id
-    await guildConfigService.incrementJoinCount(guildId)
-    const guildConfig = await guildConfigService.getGuildConfig(guildId)
+    const guildConfig = await guildConfigService.getGuildConfig(member.guild)
 
     log(`[${member.guild.name}] ${member.user.id} joined guild.`)
 

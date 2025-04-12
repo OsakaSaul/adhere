@@ -1,41 +1,58 @@
 import mongoClient from "../connections/mongoDb";
-import { GuildConfig, GuildConfigDocument } from "../models/GuildConfig";
-import { Config } from "../config/Config";
-
+import {DEFAULT_GUILD_CONFIG, GuildConfig, GuildConfigDocument} from "../models/GuildConfig";
+import {Config} from "../config/Config";
+import log from "../utils/logger";
+import {Guild} from "discord.js";
 
 export class GuildConfigService {
     private database = mongoClient.db(Config.MONGO_DATABASE);
-    private guildConfigs = this.database.collection<GuildConfigDocument>("GuildConfigDocument");
+    private guildConfigs = this.database.collection<GuildConfigDocument>("GuildConfigs");
 
-    public async getGuildConfig(guildId: string): Promise<GuildConfig> {
+
+    public async getGuildConfig(guild: Guild): Promise<GuildConfig> {
+        const guildId = guild.id;
         const config = await this.guildConfigs.findOne({ guildId });
+
         if (config) {
+            log(`[${guild.name}] Retrieved existing configuration`);
             return config;
         }
-        // Return default configuration if none exists
-        return {
-            guildId,
-            requireCamera: true,
-            welcomeThreshold: 3,
-            joinCount: 0,
-        } as GuildConfig;
+
+        return await this.createDefaultConfig(guild);
     }
 
+
+    private async createDefaultConfig(guild: Guild): Promise<GuildConfig> {
+        const newConfig: GuildConfig = {
+            guildId: guild.id,
+            ...DEFAULT_GUILD_CONFIG
+        };
+
+        await this.guildConfigs.insertOne(newConfig as GuildConfigDocument);
+        log(`[${guild.name}] Created new configuration with default values`);
+
+        return newConfig;
+    }
+
+
     public async updateGuildConfig(
-        guildId: string,
+        guild: Guild,
         updates: Partial<Omit<GuildConfig, "guildId">>
     ): Promise<void> {
+        const guildId = guild.id;
+
+        // Ensure configuration exists by calling getGuildConfig
+        await this.getGuildConfig(guild);
+
+        // Update only the fields specified in updates
         await this.guildConfigs.updateOne(
             { guildId },
             { $set: updates },
             { upsert: true }
         );
+
+        log(`[${guild.name}] Updated configuration: ${JSON.stringify(updates)}`);
     }
 
-    public async incrementJoinCount(guildId: string): Promise<void> {
-        const config = await this.getGuildConfig(guildId);
-        const newJoinCount = config.joinCount + 1;
-        await this.updateGuildConfig(guildId, { joinCount: newJoinCount });
-    }
 
 }

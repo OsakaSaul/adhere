@@ -28,30 +28,51 @@ export const setWelcomeThreshold = {
         if (!await validateCommand(interaction)) {
             return;
         }
+
+        // Ensure the interaction has a guild
+        if (!interaction.guild) {
+            await interaction.reply({
+                content: 'This command can only be used in a server.',
+                ephemeral: true
+            });
+            return;
+        }
+
         try {
-            const guildId = interaction.guildId as string;
-            const guildConfig = await guildConfigService.getGuildConfig(guildId);
-            log(`Current welcomeThreshold: ${guildConfig.welcomeThreshold}`);
+            const guildConfig = await guildConfigService.getGuildConfig(interaction.guild);
+            log(`[${interaction.guild.name}] Current welcomeThreshold: ${guildConfig.welcomeThreshold}`);
             const threshold = interaction.options.getInteger("threshold");
 
             if (threshold !== null) {
                 // Additional validation in case Discord.js validation is bypassed
                 if (threshold <= 0) {
-                    await interaction.reply(`Error: Threshold must be a positive integer.`);
-                    log(`Invalid threshold value ${threshold} attempted in ${interaction.guild?.name}.`);
+                    await interaction.reply({
+                        content: `Error: Threshold must be a positive integer.`,
+                        ephemeral: true
+                    });
+                    log(`[${interaction.guild.name}] Invalid threshold value ${threshold} attempted`);
                     return;
                 }
 
-                await guildConfigService.updateGuildConfig(guildId, {welcomeThreshold: threshold});
-                await interaction.reply(`Welcome threshold set to ${threshold}.`);
-                log(`Welcome threshold set to ${threshold} in ${interaction.guild?.name}.`);
+                await guildConfigService.updateGuildConfig(interaction.guild, {welcomeThreshold: threshold});
+                await interaction.reply({
+                    content: `Welcome threshold set to ${threshold}.`,
+                    ephemeral: true
+                });
+                log(`[${interaction.guild.name}] Welcome threshold set to ${threshold}`);
             } else {
-                await interaction.reply(`Error setting threshold. Please provide a valid number.`);
-                log(`Error setting threshold in ${interaction.guild?.name}.`);
+                await interaction.reply({
+                    content: `Error setting threshold. Please provide a valid number.`,
+                    ephemeral: true
+                });
+                log(`[${interaction.guild.name}] Error setting threshold - null value provided`);
             }
         } catch (error) {
-            log(`Error in setWelcomeThreshold: ${error}`);
-            await interaction.reply(`An error occurred while updating the welcome threshold.`);
+            log(`[${interaction.guild.name}] Error in setWelcomeThreshold: ${error}`);
+            await interaction.reply({
+                content: `An error occurred while updating the welcome threshold.`,
+                ephemeral: true
+            });
         }
     }
 }

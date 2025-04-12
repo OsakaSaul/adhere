@@ -37,24 +37,29 @@ export const requireCamera = {
             return;
         }
 
+        if (!interaction.guild) {
+            await interaction.reply({
+                content: 'This command can only be used in a server.',
+                ephemeral: true
+            });
+            return;
+        }
+
         try {
-            const guildId = interaction.guildId as string;
             const subcommand = interaction.options.getSubcommand();
-            const guildConfig = await guildConfigService.getGuildConfig(guildId);
-            log (`guildConfig: ${guildConfig.requireCamera}`);
+            const guildConfig = await guildConfigService.getGuildConfig(interaction.guild);
+            log(`[${interaction.guild.name}] Current camera requirement setting: ${guildConfig.requireCamera}`);
 
             if (subcommand === 'on') {
-                guildConfig.requireCamera = true;
-                await guildConfigService.updateGuildConfig(guildId, guildConfig);
-                log(`Camera requirement in voice channels has been enabled in guildId: ${guildId}`);
+                await guildConfigService.updateGuildConfig(interaction.guild, { requireCamera: true });
+                log(`[${interaction.guild.name}] Camera requirement in voice channels has been enabled`);
                 await interaction.reply({
                     content: 'Camera requirement in voice channels has been **enabled** in this server.',
                     ephemeral: true
                 });
             } else if (subcommand === 'off') {
-                guildConfig.requireCamera = false;
-                await guildConfigService.updateGuildConfig(guildId, guildConfig);
-                log(`Camera requirement in voice channels has been disabled in guildId: ${guildId}`);
+                await guildConfigService.updateGuildConfig(interaction.guild, { requireCamera: false });
+                log(`[${interaction.guild.name}] Camera requirement in voice channels has been disabled`);
                 await interaction.reply({
                     content: 'Camera requirement in voice channels has been **disabled** in this server.',
                     ephemeral: true
@@ -67,7 +72,7 @@ export const requireCamera = {
                 });
             }
         } catch (error) {
-            log(`Error updating camera enforcement setting in guildId: ${error}`);
+            log(`[${interaction.guild.name}] Error updating camera enforcement setting: ${error}`);
             await interaction.reply({
                 content: 'An error occurred while updating the camera enforcement setting.',
                 ephemeral: true
