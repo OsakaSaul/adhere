@@ -130,7 +130,7 @@ export class TimeoutManager {
         if (timeout) {
             clearTimeout(timeout);
             this.timeouts.delete(key);
-            log(`${member.guild.name}: Cleared kick timeout for ${member.user.username}`);
+            log(`[${member.guild.name}] Cleared kick timeout for ${member.user.username}`);
         }
     }
 
@@ -154,7 +154,7 @@ export class TimeoutManager {
     public resetMemberKickHistory(member: GuildMember): void {
         const key = this.getTimeoutKey(member);
         this.kickHistory.delete(key);
-        log(`${member.guild.name}: Reset kick history for ${member.user.username}`);
+        log(`[${member.guild.name}] Reset kick history for ${member.user.username}`);
     }
 }
 
