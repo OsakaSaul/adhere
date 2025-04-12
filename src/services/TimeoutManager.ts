@@ -100,17 +100,6 @@ export class TimeoutManager {
 
                     log(`${guild.name}: Kicking ${member.user.username} after timeout (no camera) - Offense #${kickCount}`);
                     await member.voice.disconnect();
-
-                    // Attempt to send DM to the user explaining why they were kicked
-                    try {
-                        await member.send({
-                            content: `You were disconnected from the voice channel because camera is required. Please turn on your camera to participate in voice channels.${
-                                kickCount > 1 ? ` Note: Because this is not your first offense, the timeout was reduced to ${kickDelay/1000} seconds.` : ''
-                            }`
-                        });
-                    } catch (dmError) {
-                        lerror(`Failed to send DM to ${member.user.username}: ${dmError}`);
-                    }
                 }
             } catch (error) {
                 lerror(`Failed to kick ${member.user.username}: ${error}`);
