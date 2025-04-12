@@ -5,10 +5,12 @@ import {GuildConfigService} from "../services/GuildConfigService";
 import {WelcomeMessageService} from "../services/WelcomeMessageService";
 import log from "../utils/logger";
 import ChannelService from "../services/ChannelService";
+import { NewMemberService } from "../services/NewMemberService";
 
 
 const guildConfigService = new GuildConfigService()
 const welcomeMessageService = new WelcomeMessageService()
+const memberService = new NewMemberService()
 
 let newMembers: GuildMember[] = []
 
@@ -19,29 +21,30 @@ export async function guildMemberAddEvent(member: GuildMember) {
     await guildConfigService.incrementJoinCount(guildId)
     const guildConfig = await guildConfigService.getGuildConfig(guildId)
 
-    log(`${member.guild.name}: ${member.user.id} joined guild.`)
+    log(`[${member.guild.name}] ${member.user.id} joined guild.`)
 
     if (member.user) {
-      newMembers.push(member)
+      await memberService.addNewMember(member);
     }
 
-    log(`checking ${newMembers.length} >= ${guildConfig.welcomeThreshold}.`)
+    const pendingMembersCount = await memberService.getNewMembersCount(member.guild);
 
+    log(`[${member.guild.name}] checking ${pendingMembersCount} >= ${guildConfig.welcomeThreshold}.`);
     if (newMembers.length >= guildConfig.welcomeThreshold) {
-      log(`looking for channels to send welcome message`)
+      log(`[${member.guild.name}] looking for channels to send welcome message`)
       const channelService = new ChannelService(member.guild.channels)
       const welcomeChannel = channelService.findWelcomeChannel() as TextChannel
       if (welcomeChannel) {
-        log(`found channel ${welcomeChannel.name} to send welcome message`)
+        log(`[${member.guild.name}] found channel ${welcomeChannel.name} to send welcome message`)
         await welcomeMessageService.send(guildConfig, welcomeChannel, newMembers)
-        newMembers = []
-        log(`Welcome message sent`)
+        await memberService.clearNewMembers(member.guild);
+        log(`[${member.guild.name}] Welcome message sent and new members cleared`)
       } else {
-        log(`No channels found for welcome message`)
+        log(`[${member.guild.name}] ERROR: No channels found for welcome message`)
       }
     }
 
   } catch (error) {
-    log(`Error in guildMemberAddEvent: ${error}`)
+    log(`[${member.guild.name}] ERROR: in guildMemberAddEvent: ${error}`)
   }
 }
