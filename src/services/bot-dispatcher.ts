@@ -3,6 +3,7 @@ import {GuildConfigService} from "./GuildConfigService";
 import { Client, GatewayIntentBits, Guild, GuildMember } from "discord.js"
 import {Config} from "../config/Config";
 import ChannelService from "./ChannelService";
+import { timeoutManager } from "./TimeoutManager";
 
 
 const botToken = Config.DISCORD_BOT_TOKEN
@@ -95,6 +96,7 @@ export const serverMuteMember = async (guild: Guild, member: GuildMember) => {
       lerror(e)
     })
     log(`${guild.name}: Muted ${member.user.username}`)
+    timeoutManager.scheduleKick(guild, member)
   }
 }
 
@@ -114,6 +116,7 @@ export const serverUnmuteMember = async (guild: Guild, member: GuildMember) => {
     // log("Second try for good measure")
   }, 1500)
   log(`${guild.name}: Unmuted ${member.user.username}`)
+  timeoutManager.clearKickTimeout(member)
 }
 
 
