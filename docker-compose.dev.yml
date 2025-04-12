@@ -1,0 +1,10 @@
+services:
+
+  bot:
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
+    # Add volumes for hot reloading in development
+    volumes:
+      - ./:/app
+      - /app/node_modules
