@@ -12,9 +12,6 @@ export default class ChannelService {
         this.channelManager = guildChannelManager;
     }
 
-    public findGeneralChannel(): TextChannel | null {
-        return this.findChannelByName('general') as TextChannel || null;
-    }
 
     public findChannelByName(name: string, type: ChannelType = ChannelType.GuildText): GuildBasedChannel | null {
         const channel = this.channelManager.cache.find(
