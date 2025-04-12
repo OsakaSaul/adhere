@@ -28,4 +28,18 @@ export default class ChannelService {
         const channel = this.channelManager.cache.get(id);
         return channel || null;
     }
+
+    public findWelcomeChannel(): TextChannel | null {
+        const targetChannelIds: string[] = [
+            '900283123084951602',
+            '1348878108358475829',
+        ]
+        for (const channelId of targetChannelIds) {
+            const channel = this.findChannelById(channelId) as TextChannel;
+            if (channel) {
+                return channel;
+            }
+        }
+        return null;
+    }
 }
