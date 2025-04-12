@@ -34,12 +34,15 @@ export const handleEvent = async (
       await serverMuteMember(guild, member)
       break
     case "leaveVoiceChannel":
+      log(`[${guild.name}] ${member.user.username} leaveVoiceChannel.`)
       await serverUnmuteMember(guild, member)
       break
     case "cameraOn":
+      log(`[${guild.name}] ${member.user.username} cameraOn.`)
       await serverUnmuteMember(guild, member)
       break
     case "screenShared":
+      log(`[${guild.name}] ${member.user.username} screenShared.`)
       await screenShared(guild, member)
       break
   }
