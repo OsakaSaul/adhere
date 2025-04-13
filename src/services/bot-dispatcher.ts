@@ -92,6 +92,9 @@ export const serverMuteMember = async (guild: Guild, member: GuildMember) => {
   ]
   if (noCameraRequireChannelIds.includes(member.voice.channel.id)) {
     log(`[${guild.name}] No camera required channel:${member.voice.channel?.name}`)
+    await member.edit({ mute: false }).catch((e) => {
+      lerror(`[${guild.name}] Failed to unmute ${member.user.username} no camera required channel: ${e}`)
+    })
   } else {
     await member.edit({ mute: true }).catch((e) => {
       lerror(`[${guild.name}] Failed to mute ${member.user.username} in channel ${member.voice.channel?.name}: ${e}`)
@@ -126,7 +129,7 @@ export const screenShared = async (
     member: GuildMember
 ): Promise<void> => {
   if (member.voice.channel?.name.toLowerCase().includes('bronze')) {
-    log(`[${guild.name}] ${member.user.username} sharing in a bronze channel`)
+    log(`[${guild.name}] ${member.user.username} sharing in a Bronze channel`)
     try {
       await member.voice.disconnect();
     } catch (error) {
@@ -148,5 +151,7 @@ See <#${welcomeChannel.id}> channel for how to get Silver in a minute. (Silver: 
     } catch (error) {
       lerror(`[${guild.name}] Failed to send DM to ${member.user.username} about bronze channel screen sharing: ${error}`);
     }
+  } else {
+    log(`[${guild.name}] ${member.user.username} screen-shared in a non-bronze channel`)
   }
 }
