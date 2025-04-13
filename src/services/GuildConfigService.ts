@@ -14,7 +14,7 @@ export class GuildConfigService {
         const config = await this.guildConfigs.findOne({ guildId });
 
         if (config) {
-            log(`[${guild.name}] Retrieved existing configuration`);
+            log(`[${guild.name}] Retrieved existing GuildConfig: ${JSON.stringify(config, null, 2)}`);
             return config;
         }
 
@@ -29,7 +29,7 @@ export class GuildConfigService {
         };
 
         await this.guildConfigs.insertOne(newConfig as GuildConfigDocument);
-        log(`[${guild.name}] Created new configuration with default values`);
+        log(`[${guild.name}] Created new GuildConfig: ${JSON.stringify(newConfig, null, 2)}`);
 
         return newConfig;
     }

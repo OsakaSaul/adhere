@@ -15,7 +15,10 @@ const discordClient = new Client({
   ],
 })
 
-discordClient.login(botToken)
+
+discordClient.login(botToken).then(() => {
+    log("Bot Logged In")
+})
 
 
 export const handleEvent = async (
