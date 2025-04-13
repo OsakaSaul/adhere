@@ -1,6 +1,8 @@
 import { GuildConfig } from "../models/GuildConfig";
 import { TextChannel } from "discord.js";
 import {NewMemberDocument} from "../models/NewMember";
+import log from "../utils/logger";
+
 
 export class WelcomeMessageService {
 
@@ -9,6 +11,10 @@ export class WelcomeMessageService {
         generalChannel: TextChannel,
         newMembers: NewMemberDocument[]
     ): Promise<void> {
+        if (!guildConfig.redditLink) {
+            log(`[${generalChannel.guild.name}] WARNING: WelcomeMessageService NO reddit link found in guild config.`);
+            return;
+        }
         const newMemberIds = this.getMemberIds(newMembers);
         await generalChannel.send(
 `Welcome to The Tavern, ${newMemberIds}!
@@ -30,6 +36,7 @@ Post **in this channel** "votes done." We'll check and Silver you ASAP!
 
 Hope to meet you in our calls soon!
 `);
+        log(`[${generalChannel.guild.name}] Welcome message sent to ${newMemberIds} with ${guildConfig.redditLink}`);
     }
 
     private getMemberIds(newMembers: NewMemberDocument[]): string {
