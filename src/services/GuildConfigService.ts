@@ -14,7 +14,7 @@ export class GuildConfigService {
         const config = await this.guildConfigs.findOne({ guildId });
 
         if (config) {
-            log(`[${guild.name}] Retrieved existing GuildConfig: ${JSON.stringify(config, null, 2)}`);
+            // log(`[${guild.name}] Retrieved existing GuildConfig: ${JSON.stringify(config, null, 2)}`);
             return config;
         }
 
