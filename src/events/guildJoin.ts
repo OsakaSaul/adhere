@@ -12,8 +12,6 @@ const guildConfigService = new GuildConfigService()
 const welcomeMessageService = new WelcomeMessageService()
 const memberService = new NewMemberService()
 
-let newMembers: GuildMember[] = []
-
 
 export async function guildMemberAddEvent(member: GuildMember) {
   try {
@@ -28,7 +26,8 @@ export async function guildMemberAddEvent(member: GuildMember) {
     const pendingMembersCount = await memberService.getNewMembersCount(member.guild);
 
     log(`[${member.guild.name}] checking ${pendingMembersCount} >= ${guildConfig.welcomeThreshold}.`);
-    if (newMembers.length >= guildConfig.welcomeThreshold) {
+    if (pendingMembersCount >= guildConfig.welcomeThreshold) {
+      const newMembers = await memberService.getNewMembers(member.guild);
       log(`[${member.guild.name}] looking for channels to send welcome message`)
       const channelService = new ChannelService(member.guild.channels)
       const welcomeChannel = channelService.findWelcomeChannel() as TextChannel

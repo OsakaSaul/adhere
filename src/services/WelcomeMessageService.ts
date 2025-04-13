@@ -1,12 +1,13 @@
 import { GuildConfig } from "../models/GuildConfig";
-import {GuildMember, TextChannel} from "discord.js";
+import { TextChannel } from "discord.js";
+import {NewMemberDocument} from "../models/NewMember";
 
 export class WelcomeMessageService {
 
     public async send(
         guildConfig: GuildConfig,
         generalChannel: TextChannel,
-        newMembers: GuildMember[]
+        newMembers: NewMemberDocument[]
     ): Promise<void> {
         const newMemberIds = this.getMemberIds(newMembers);
         await generalChannel.send(
@@ -31,8 +32,8 @@ Hope to meet you in our calls soon!
 `);
     }
 
-    private getMemberIds(members: GuildMember[]): string {
-        return members.map(member => `<@${member.id}>`).join(' ');
+    private getMemberIds(newMembers: NewMemberDocument[]): string {
+        return newMembers.map(newMember => `<@${newMember.userId}>`).join(' ');
     }
 
 }
