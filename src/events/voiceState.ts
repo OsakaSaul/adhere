@@ -142,12 +142,12 @@ export function voiceStateEvent(oldState: VoiceState, newState: VoiceState) {
 
   // Instead of inserting into MongoDB, call handleEvent directly
   if (memberJoined(member, oldState, newState) && newState.channel) {
-    log(`${newState.guild.name}: ${userName} joined ${newState.channel?.name}.`)
+    log(`[${newState.guild.name}] ${userName} joined ${newState.channel?.name}.`)
     handleEvent(guild, member, "joinVoiceChannel")
   }
 
   if (memberLeft(member, oldState, newState) && oldState.channel) {
-    log(`${newState.guild.name}: ${userName} left ${oldState.channel?.name}.`)
+    log(`[${newState.guild.name}] ${userName} left ${oldState.channel?.name}.`)
     handleEvent(guild, member, "leaveVoiceChannel")
   }
 
@@ -157,29 +157,29 @@ export function voiceStateEvent(oldState: VoiceState, newState: VoiceState) {
       oldState.channel
   ) {
     log(
-        `${newState.guild.name}: ${userName} moved from ${oldState.channel?.name} to ${newState.channel?.name}.`
+        `[${newState.guild.name}] ${userName} moved from ${oldState.channel?.name} to ${newState.channel?.name}.`
     )
     handleEvent(guild, member, "leaveVoiceChannel")
     handleEvent(guild, member, "joinVoiceChannel")
   }
 
   if (cameraDisabled(member, oldState, newState) && newState.channel) {
-    log(`${newState.guild.name}: ${userName} camera disabled.`)
+    log(`[${newState.guild.name}] ${userName} camera disabled.`)
     handleEvent(guild, member, "cameraOff")
   }
 
   if (cameraEnabled(member, oldState, newState) && newState.channel) {
-    log(`${newState.guild.name}: ${userName} camera enabled.`)
+    log(`[${newState.guild.name}] ${userName} camera enabled.`)
     handleEvent(guild, member, "cameraOn")
   }
 
   if (screenShared(member, oldState, newState) && newState.channel) {
-    log(`${newState.guild.name}: ${userName} screen shared.`)
+    log(`[${newState.guild.name}] ${userName} screen shared.`)
     handleEvent(guild, member, "screenShared")
   }
 
   if (screenUnshared(member, oldState, newState) && newState.channel) {
-    log(`${newState.guild.name}: ${userName} screen unshared.`)
+    log(`[${newState.guild.name}] ${userName} screen unshared.`)
     handleEvent(guild, member, "screenUnshared")
   }
 }
