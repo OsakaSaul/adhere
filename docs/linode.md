@@ -33,9 +33,9 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin 
 cd /srv
 git clone https://github.com/OsakaSaul/adhere.git
 cd adhere
+git checkout main
 cp .env-example .env
 # Edit .env with your Discord API credentials
 docker compose build
-
-
+docker compose up -d
 ```
