@@ -17,7 +17,7 @@ export async function guildMemberAddEvent(member: GuildMember) {
   try {
     const guildConfig = await guildConfigService.getGuildConfig(member.guild)
 
-    log(`[${member.guild.name}] ${member.user.id} joined guild.`)
+    log(`[${member.guild.name}] ${member.user.username} joined guild.`)
 
     if (member.user) {
       await memberService.addNewMember(member);

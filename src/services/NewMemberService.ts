@@ -11,7 +11,7 @@ export class NewMemberService {
 
     async addNewMember(member: GuildMember): Promise<void> {
         try {
-            log(`[${member.guild.name}] Adding new member ${member.user.id} to MongoDB`);
+            log(`[${member.guild.name}] Adding new member ${member.user.username} (${member.user.id}) to MongoDB`);
             const newMember: NewMember = {
                 guildId: member.guild.id,
                 userId: member.user.id,
@@ -20,7 +20,7 @@ export class NewMemberService {
             };
 
             await this.newMembers.insertOne(newMember as NewMemberDocument);
-            log(`[${member.guild.name}] Added new member ${member.user.id} to MongoDB`);
+            log(`[${member.guild.name}] Added new member ${member.user.username} (${member.user.id}) to MongoDB`);
         } catch (error) {
             log(`[${member.guild.name}] ERROR adding new member to MongoDB: ${error}`);
             throw error;
@@ -31,7 +31,7 @@ export class NewMemberService {
     async getNewMembersCount(guild: Guild): Promise<number> {
         try {
             const count = await this.newMembers.countDocuments({ guildId: guild.id });
-            log(`[${guild.name}] Retrieved pending members count: ${count}`);
+            log(`[${guild.name}] Retrieved pending members count: ${count} from MongoDB`);
             return count;
         } catch (error) {
             log(`Error getting pending members count for guild ${guild.name}: ${error}`);
@@ -43,7 +43,7 @@ export class NewMemberService {
     async getNewMembers(guild: Guild): Promise<NewMemberDocument[]> {
         try {
             const members = await this.newMembers.find({ guildId: guild.id }).toArray();
-            log(`[${guild.name}] Retrieved ${members.length} pending members for guild`);
+            log(`[${guild.name}] Retrieved ${members.length} pending members for guild from MongoDB`);
             return members;
         } catch (error) {
             log(`Error getting pending members for guild ${guild.name}: ${error}`);
@@ -55,7 +55,7 @@ export class NewMemberService {
     async clearNewMembers(guild: Guild): Promise<void> {
         try {
             const result = await this.newMembers.deleteMany({ guildId: guild.id });
-            log(`[${guild.name}] Cleared ${result.deletedCount} pending members`);
+            log(`[${guild.name}] Cleared ${result.deletedCount} pending members from MongoDB`);
         } catch (error) {
             log(`[${guild.name}] Error clearing pending members: ${error}`);
             throw error;
