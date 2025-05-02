@@ -30,7 +30,7 @@ No webcam?  Hit ⁠help-complaints channel for cam work-arounds.
 # No calls going?
 Start a call, others will join you in minutes!
 For all of The Tavern get Silver for access to bigger calls, chess, poker, party games and events:
-Up-vote the last 7 (SEVEN) posts from ${guildConfig.redditLink}
+Up-vote the last 5 (FIVE) posts from ${guildConfig.redditLink}
 
 Post **in this channel** "votes done." We'll check and Silver you ASAP!
 
